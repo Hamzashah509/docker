@@ -1,0 +1,40 @@
+version: '3.8'  # Specify the Docker Compose version
+
+
+services:
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ameer
+      MYSQL_DATABASE: blog_db
+      MYSQL_USER: ameer
+      MYSQL_PASSWORD: ameer
+    volumes:
+      - db_data:/var/lib/mysql
+
+  flask_app:
+    build:
+      context: ./Flask_App_A10
+    volumes:
+      - ./Flask_App_A10:/app
+    environment:
+      - SECRET_KEY=your_secret_key
+      - DATABASE_URL=mysql+pymysql://ameer:ameer@db:3306/blog_db
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "5010:5010"  # Maps container port 5010 to host port 5010
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - flask_app
+    restart: always
+
+volumes:
+  db_data:
+

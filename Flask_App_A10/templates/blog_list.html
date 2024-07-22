@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h1 class="heading">Welcome to Ameer Hamza Writes</h1>
+    <p class="intro-paragraph">
+        Welcome to my personal blog where I share insights, stories, and experiences on a variety of topics.
+        Whether you're here to read about <span class="highlight">technology</span>, <span class="highlight">personal development</span>, or just some random musings, I hope
+        you find something that piques your interest. Feel free to leave comments, share your thoughts, and join
+        in the conversation. Happy reading!
+    </p>
+
+    <!-- Existing blog post listings or other content -->
+    {% for post in posts %}
+        <div class="post">
+            <h2><a href="{{ url_for('blog_post', post_id=post.id) }}" class="custom-link">{{ post.title }}</a></h2>
+            <p class="intro-paragraph">{{ post.excerpt }}</p>
+            <a href="{{ url_for('blog_post', post_id=post.id) }}" class="custom-link">Read more</a>
+        </div>
+    {% endfor %}
+{% endblock %}
+

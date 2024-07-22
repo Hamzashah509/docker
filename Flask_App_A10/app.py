@@ -2,17 +2,15 @@ from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
+from flask_migrate import Migrate  # Import Flask-Migrate
 from forms import RegistrationForm, LoginForm, PostForm
 from models import db, User, Post
 from config import Config
 
-
-
-
 app = Flask(__name__)
 app.config.from_object(Config)
-
 db.init_app(app)
+migrate = Migrate(app, db)  # Initialize Flask-Migrate
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -26,6 +24,10 @@ def load_user(user_id):
 def home():
     posts = Post.query.all()
     return render_template('blog_list.html', posts=posts)
+
+@app.route('/health')
+def health():
+    return 'OK', 200
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -78,6 +80,5 @@ def post(post_id):
     return render_template('blog_post.html', title=post.title, post=post)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(host='164.92.132.210', port=5010, debug=True)
+    app.run(host='0.0.0.0', port=5010, debug=True)
+

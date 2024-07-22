@@ -4,20 +4,19 @@ FROM python:3.12-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_PORT=5010
 # Set the working directory
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt /app/
+
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the Flask app
-COPY . /app/
+COPY . .
 
 # Expose the port the app runs on
 EXPOSE 5010
 
 # Command to run the app
-CMD ["gunicorn", "--config", "gunicorn_config.py", "wsgi:app"]
-
+CMD ["gunicorn", "--bind", "0.0.0.0:5010", "--workers", "4", "--threads", "2", "wsgi:app"]
